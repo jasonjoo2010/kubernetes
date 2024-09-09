@@ -16,6 +16,7 @@ package sysinfo
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"regexp"
 	"strconv"
@@ -57,6 +58,10 @@ func GetBlockDeviceInfo(sysfs sysfs.SysFs) (map[string]info.DiskInfo, error) {
 		if strings.HasPrefix(name, "loop") || strings.HasPrefix(name, "ram") || strings.HasPrefix(name, "sr") {
 			continue
 		}
+		if disk.Mode().Type()&fs.ModeDevice == 0 {
+			continue
+		}
+
 		diskInfo := info.DiskInfo{
 			Name: name,
 		}
